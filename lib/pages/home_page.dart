@@ -28,15 +28,13 @@ class _HomePage extends State<HomePage> {
     )
   ];
 
-  void _addTransaction({@required String title, @required String amount}) {
-    if(title.isEmpty || amount.isEmpty)
-      return null;
-    
+  void _addTransaction({@required String title, @required double amount}) {
     dynamic transaction = Transaction(
         id: _transactions.length + 1,
         title: title,
-        amount: double.parse(amount),
+        amount: amount,
         datetime: DateTime.now());
+        
     setState(() {
       _transactions.add(transaction);
     });
@@ -80,7 +78,7 @@ class _HomePage extends State<HomePage> {
             _openModal(context);
           }),
       bottomNavigationBar:
-          BottomAppBar(color: Colors.lightBlue, child: Container(height: 50)),
+          BottomAppBar(color: Colors.blueGrey, child: Container(height: 50)),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
