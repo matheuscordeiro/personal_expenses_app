@@ -22,7 +22,6 @@ class _HomePage extends State<HomePage> {
         title: title,
         amount: amount,
         datetime: DateTime.now());
-    FocusScope.of(context).requestFocus(new FocusNode());
     setState(() {
       _transactions.add(transaction);
     });

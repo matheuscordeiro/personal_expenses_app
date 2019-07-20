@@ -16,7 +16,7 @@ class _TransactionFormState extends State<TransactionForm> {
   final titleController = TextEditingController();
   final amountController = TextEditingController();
 
-  void _submitData() {
+  void _submitData(BuildContext context) {
     final enteredTitle = titleController.text;
     final enteredAmount = double.parse(amountController.text);
 
@@ -27,6 +27,7 @@ class _TransactionFormState extends State<TransactionForm> {
       Navigator.of(context).pop(context); // remove a tela mais no topo da pilha
     }
     widget.handlerAddTransaction(title: enteredTitle, amount: enteredAmount);
+    FocusScope.of(context).requestFocus(new FocusNode()); // fecha o teclado
   }
 
   @override
@@ -41,19 +42,19 @@ class _TransactionFormState extends State<TransactionForm> {
                 TextField(
                     decoration: InputDecoration(labelText: 'Title'),
                     controller: titleController,
-                    onSubmitted: (_) => _submitData()),
+                    onSubmitted: (_) => _submitData(context)),
                 TextField(
                     decoration: InputDecoration(labelText: 'Amount'),
                     controller: amountController,
                     keyboardType: TextInputType.number,
-                    onSubmitted: (_) => _submitData()),
+                    onSubmitted: (_) => _submitData(context)),
                 FlatButton(
                     child: Text(
                       'Add expense',
                       style: TextStyle(color: Colors.purple),
                     ),
                     // color: Colors.purple,
-                    onPressed: _submitData)
+                    onPressed: () => _submitData(context))
               ],
             )));
   }
