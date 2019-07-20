@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 
 class TransactionForm extends StatefulWidget {
   final Function handlerAddTransaction;
+  final bool isModal;
 
-  TransactionForm({@required this.handlerAddTransaction});
+  TransactionForm({@required this.handlerAddTransaction, this.isModal = false});
 
   @override
   State<StatefulWidget> createState() {
@@ -22,6 +23,9 @@ class _TransactionFormState extends State<TransactionForm> {
     if (enteredTitle.isEmpty || enteredAmount <= 0) {
       return;
     }
+    if (widget.isModal) {
+      Navigator.of(context).pop(context); // remove a tela mais no topo da pilha
+    }
     widget.handlerAddTransaction(title: enteredTitle, amount: enteredAmount);
   }
 
@@ -35,23 +39,14 @@ class _TransactionFormState extends State<TransactionForm> {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: <Widget>[
                 TextField(
-                  decoration: InputDecoration(labelText: 'Title'),
-                  controller: titleController,
-                  onSubmitted: (_) {
-                    _submitData();
-                    Navigator.of(context)
-                        .pop(context); // remove a tela mais no topo da pilha
-                  },
-                ),
+                    decoration: InputDecoration(labelText: 'Title'),
+                    controller: titleController,
+                    onSubmitted: (_) => _submitData()),
                 TextField(
                     decoration: InputDecoration(labelText: 'Amount'),
                     controller: amountController,
                     keyboardType: TextInputType.number,
-                    onSubmitted: (_) {
-                      _submitData();
-                      Navigator.of(context)
-                          .pop(context); // remove a tela mais no topo da pilha
-                    }),
+                    onSubmitted: (_) => _submitData()),
                 FlatButton(
                     child: Text(
                       'Add expense',

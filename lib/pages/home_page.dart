@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../models/transaction.dart';
 import '../widgets/transaction_form.dart';
 import '../widgets/transaction_list.dart';
+import '../widgets/chart.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -13,20 +14,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePage extends State<HomePage> {
   // Apenas o ponteiro é final, o valor em si pode ser modificado
-  final List<Transaction> _transactions = [
-    Transaction(
-      id: 1,
-      title: 'Maria do Carmo',
-      amount: 53.50,
-      datetime: DateTime.now(),
-    ),
-    Transaction(
-      id: 2,
-      title: 'José Cordeiro',
-      amount: 79.20,
-      datetime: DateTime.now(),
-    )
-  ];
+  final List<Transaction> _transactions = [];
 
   void _addTransaction({@required String title, @required double amount}) {
     dynamic transaction = Transaction(
@@ -34,7 +22,7 @@ class _HomePage extends State<HomePage> {
         title: title,
         amount: amount,
         datetime: DateTime.now());
-        
+    FocusScope.of(context).requestFocus(new FocusNode());
     setState(() {
       _transactions.add(transaction);
     });
@@ -44,7 +32,7 @@ class _HomePage extends State<HomePage> {
     showModalBottomSheet(
         context: ctx,
         builder: (_) {
-          return TransactionForm(handlerAddTransaction: _addTransaction);
+          return TransactionForm(handlerAddTransaction: _addTransaction, isModal: true);
         });
   }
 
@@ -70,6 +58,9 @@ class _HomePage extends State<HomePage> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
             TransactionForm(handlerAddTransaction: _addTransaction),
+            SizedBox(height: 20),
+            Chart(recentTransactions: _transactions),
+            SizedBox(height: 20),
             TransactionList(transactions: _transactions),
           ])),
       floatingActionButton: FloatingActionButton(

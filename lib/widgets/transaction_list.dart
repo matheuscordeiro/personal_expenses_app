@@ -11,45 +11,36 @@ class TransactionList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        height: 300,
-        child: ListView.builder(
-          itemBuilder: (BuildContext bcx, int index) {
-            return Card(
-              child: Row(
-                children: <Widget>[
-                  Container(
-                      margin: EdgeInsets.all(10.0),
-                      padding: EdgeInsets.all(2.0),
-                      decoration: BoxDecoration(
-                          border: Border.all(color: Colors.purple, width: 2)),
-                      child: Text(
-                        'R\$ ${transactions[index].amount.toStringAsFixed(2)}',
-                        style: TextStyle(
-                            color: Colors.purple,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20),
-                      )),
-                  Container(
-                      child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        '${transactions[index].title}',
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
-                      Text(
-                        '${DateFormat.Hms().format(transactions[index].datetime)}  ${DateFormat.yMd().format(transactions[index].datetime)}',
-                        style: TextStyle(color: Colors.grey, fontSize: 13),
-                      )
-                    ],
-                  )),
-                ],
-              ),
-            );
-          },
-          itemCount: transactions.length,
-        ));
+    return transactions.isEmpty
+        ? Center(
+            child: Container(
+            child: Text('Não há transações cadastradas'),
+            margin: EdgeInsets.only(top: 20),
+          ))
+        : Container(
+            height: 300,
+            child: ListView.builder(
+              itemBuilder: (BuildContext bcx, int index) {
+                return Card(
+                    elevation: 2.0,
+                    child: ListTile(
+                        leading: CircleAvatar(
+                            radius: 30.0,
+                            child: Padding(
+                                padding: EdgeInsets.all(6.0),
+                                child: FittedBox(
+                                  child: Text(
+                                    'R\$ ${transactions[index].amount.toStringAsFixed(2)}',
+                                  ),
+                                ))),
+                        title: Text('${transactions[index].title}',
+                            style: Theme.of(context).textTheme.title),
+                        subtitle: Text(
+                          '${DateFormat.Hms().format(transactions[index].datetime)}  ${DateFormat.yMd().format(transactions[index].datetime)}',
+                          style: TextStyle(color: Colors.grey, fontSize: 13),
+                        )));
+              },
+              itemCount: transactions.length,
+            ));
   }
 }
