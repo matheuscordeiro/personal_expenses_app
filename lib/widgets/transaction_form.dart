@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class TransactionForm extends StatefulWidget {
   final Function handlerAddTransaction;
-  final bool isModal;
 
-  TransactionForm({@required this.handlerAddTransaction, this.isModal = false});
+  TransactionForm({@required this.handlerAddTransaction});
 
   @override
   State<StatefulWidget> createState() {
@@ -13,21 +13,37 @@ class TransactionForm extends StatefulWidget {
 }
 
 class _TransactionFormState extends State<TransactionForm> {
-  final titleController = TextEditingController();
-  final amountController = TextEditingController();
+  final _titleController = TextEditingController();
+  final _amountController = TextEditingController();
+  DateTime dateSelected;
 
   void _submitData(BuildContext context) {
-    final enteredTitle = titleController.text;
-    final enteredAmount = double.parse(amountController.text);
+    final enteredTitle = _titleController.text;
+    final enteredAmount = _amountController.text;
 
-    if (enteredTitle.isEmpty || enteredAmount <= 0) {
+    if (enteredTitle.isEmpty || enteredAmount.isEmpty || dateSelected == null) {
       return;
     }
-    if (widget.isModal) {
-      Navigator.of(context).pop(context); // remove a tela mais no topo da pilha
-    }
-    widget.handlerAddTransaction(title: enteredTitle, amount: enteredAmount);
+
+    widget.handlerAddTransaction(title: enteredTitle, amount: double.parse(enteredAmount), datetime: dateSelected);
     FocusScope.of(context).requestFocus(new FocusNode()); // fecha o teclado
+    Navigator.of(context)
+        .pop(context); // remove a tela mais no topo da pilha (modal)
+  }
+
+  void _showDatePicker(BuildContext context) {
+    showDatePicker(
+            context: context,
+            initialDate: DateTime.now(),
+            firstDate: DateTime(2019),
+            lastDate: DateTime(2020))
+        .then((date) {
+      if (date != null) {
+        setState(() {
+          dateSelected = date;
+        });
+      }
+    });
   }
 
   @override
@@ -41,19 +57,37 @@ class _TransactionFormState extends State<TransactionForm> {
               children: <Widget>[
                 TextField(
                     decoration: InputDecoration(labelText: 'Title'),
-                    controller: titleController,
+                    controller: _titleController,
                     onSubmitted: (_) => _submitData(context)),
                 TextField(
                     decoration: InputDecoration(labelText: 'Amount'),
-                    controller: amountController,
+                    controller: _amountController,
                     keyboardType: TextInputType.number,
                     onSubmitted: (_) => _submitData(context)),
-                FlatButton(
+                SizedBox(
+                  height: 10.0,
+                ),
+                Row(
+                  children: <Widget>[
+                    Text(dateSelected == null
+                        ? 'Date not found'
+                        : '${DateFormat('d/M/y').format(dateSelected)}'),
+                    FlatButton(
+                        child: Text('Choose the date',
+                            style: TextStyle(
+                                color: Theme.of(context).primaryColor,
+                                fontWeight: FontWeight.bold)),
+                        onPressed: () {
+                          _showDatePicker(context);
+                        })
+                  ],
+                ),
+                RaisedButton(
                     child: Text(
                       'Add expense',
-                      style: TextStyle(color: Colors.purple),
                     ),
-                    // color: Colors.purple,
+                    color: Theme.of(context).primaryColor,
+                    textColor: Theme.of(context).textTheme.button.color,
                     onPressed: () => _submitData(context))
               ],
             )));

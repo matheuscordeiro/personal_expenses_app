@@ -16,14 +16,25 @@ class _HomePage extends State<HomePage> {
   // Apenas o ponteiro é final, o valor em si pode ser modificado
   final List<Transaction> _transactions = [];
 
-  void _addTransaction({@required String title, @required double amount}) {
+  void _addTransaction(
+      {@required String title,
+      @required double amount,
+      @required DateTime datetime}) {
     dynamic transaction = Transaction(
-        id: _transactions.length + 1,
+        id: DateTime.now().toString(),
         title: title,
         amount: amount,
-        datetime: DateTime.now());
+        datetime: datetime);
     setState(() {
       _transactions.add(transaction);
+    });
+  }
+
+  void _deleteTransaction({@required String id}) {
+    setState(() {
+      _transactions.removeWhere((tx) {
+        return tx.id == id;
+      });
     });
   }
 
@@ -31,7 +42,7 @@ class _HomePage extends State<HomePage> {
     showModalBottomSheet(
         context: ctx,
         builder: (_) {
-          return TransactionForm(handlerAddTransaction: _addTransaction, isModal: true);
+          return TransactionForm(handlerAddTransaction: _addTransaction);
         });
   }
 
@@ -56,11 +67,12 @@ class _HomePage extends State<HomePage> {
           child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
-            TransactionForm(handlerAddTransaction: _addTransaction),
             SizedBox(height: 20),
             Chart(recentTransactions: _transactions),
             SizedBox(height: 20),
-            TransactionList(transactions: _transactions),
+            TransactionList(
+                transactions: _transactions,
+                handlerDeleteTransaction: _deleteTransaction),
           ])),
       floatingActionButton: FloatingActionButton(
           child: Icon(Icons.add),
