@@ -13,10 +13,11 @@ class TransactionList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final MediaQueryData mediaQuery = MediaQuery.of(context);
     return transactions.isEmpty
         ? Center(
             child: Container(
-            child: Text('Não há transações cadastradas'),
+            child: Text('Não há transações cadastradas', style: Theme.of(context).textTheme.title,),
             margin: EdgeInsets.only(top: 20),
           ))
         : Container(
@@ -41,14 +42,22 @@ class TransactionList extends StatelessWidget {
                         '${DateFormat.yMd().format(transactions[index].datetime)}',
                         style: TextStyle(color: Colors.grey, fontSize: 13),
                       ),
-                      trailing: IconButton(
-                        icon: Icon(
-                          Icons.delete,
-                          color: Colors.blueGrey,
-                        ),
-                        onPressed: () => handlerDeleteTransaction(
-                            id: transactions[index].id),
-                      ),
+                      trailing: mediaQuery.size.width > 500
+                          ? FlatButton.icon(
+                              icon: Icon(Icons.delete),
+                              label: Text('Delete transaction'),
+                              textColor: Colors.blueGrey,
+                              onPressed: () => handlerDeleteTransaction(
+                                  id: transactions[index].id),
+                            )
+                          : IconButton(
+                              icon: Icon(
+                                Icons.delete,
+                                color: Colors.blueGrey,
+                              ),
+                              onPressed: () => handlerDeleteTransaction(
+                                  id: transactions[index].id),
+                            ),
                     ));
               },
               itemCount: transactions.length,

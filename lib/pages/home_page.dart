@@ -1,9 +1,12 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../models/transaction.dart';
+import '../widgets/chart.dart';
 import '../widgets/transaction_form.dart';
 import '../widgets/transaction_list.dart';
-import '../widgets/chart.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -48,40 +51,75 @@ class _HomePage extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Personal Expenses'),
-        centerTitle: false,
-        actions: <Widget>[
-          IconButton(
-              icon: Icon(
-                Icons.add,
-                color: Colors.white,
-              ),
-              onPressed: () {
-                _openModal(context);
-              })
-        ],
-      ),
-      body: SingleChildScrollView(
-          child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+    final PreferredSizeWidget appBar = Platform.isIOS
+        ? CupertinoNavigationBar(
+            middle: Text('Personal Expenses'),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-            SizedBox(height: 20),
-            Chart(recentTransactions: _transactions),
-            SizedBox(height: 20),
-            TransactionList(
-                transactions: _transactions,
-                handlerDeleteTransaction: _deleteTransaction),
-          ])),
-      floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.add),
-          onPressed: () {
-            _openModal(context);
-          }),
-      bottomNavigationBar:
-          BottomAppBar(color: Colors.blueGrey, child: Container(height: 50)),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-    );
+                GestureDetector(
+                  child: Icon(CupertinoIcons.add),
+                  onTap: () => _openModal(context),
+                )
+              ],
+            ),
+          )
+        : AppBar(
+            title: Text('Personal Expenses'),
+            centerTitle: false,
+            actions: <Widget>[
+              IconButton(
+                  icon: Icon(
+                    Icons.add,
+                    color: Colors.white,
+                  ),
+                  onPressed: () {
+                    _openModal(context);
+                  })
+            ],
+          );
+
+    final Widget appBody = SafeArea(
+        child: SingleChildScrollView(
+            child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+          SizedBox(height: 20),
+          Switch.adaptive(
+            value: true,
+            onChanged: (_) {},
+            activeColor: Theme.of(context).accentColor,
+          ),
+          SizedBox(height: 20),
+          Container(
+            child: Chart(recentTransactions: _transactions),
+            height: 150,
+          ),
+          SizedBox(height: 20),
+          TransactionList(
+              transactions: _transactions,
+              handlerDeleteTransaction: _deleteTransaction),
+        ])));
+
+    return Platform.isIOS
+        ? CupertinoPageScaffold(
+            child: appBody,
+            navigationBar: appBar,
+          )
+        : Scaffold(
+            appBar: appBar,
+            body: appBody,
+            floatingActionButton: Platform.isIOS
+                ? Container()
+                : FloatingActionButton(
+                    child: Icon(Icons.add),
+                    onPressed: () {
+                      _openModal(context);
+                    }),
+            bottomNavigationBar: BottomAppBar(
+                color: Colors.blueGrey, child: Container(height: 50)),
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.centerDocked,
+          );
   }
 }

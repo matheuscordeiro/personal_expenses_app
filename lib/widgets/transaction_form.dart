@@ -1,5 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
+import './adaptive_flat_button.dart';
 
 class TransactionForm extends StatefulWidget {
   final Function handlerAddTransaction;
@@ -25,7 +28,10 @@ class _TransactionFormState extends State<TransactionForm> {
       return;
     }
 
-    widget.handlerAddTransaction(title: enteredTitle, amount: double.parse(enteredAmount), datetime: dateSelected);
+    widget.handlerAddTransaction(
+        title: enteredTitle,
+        amount: double.parse(enteredAmount),
+        datetime: dateSelected);
     FocusScope.of(context).requestFocus(new FocusNode()); // fecha o teclado
     Navigator.of(context)
         .pop(context); // remove a tela mais no topo da pilha (modal)
@@ -72,14 +78,7 @@ class _TransactionFormState extends State<TransactionForm> {
                     Text(dateSelected == null
                         ? 'Date not found'
                         : '${DateFormat('d/M/y').format(dateSelected)}'),
-                    FlatButton(
-                        child: Text('Choose the date',
-                            style: TextStyle(
-                                color: Theme.of(context).primaryColor,
-                                fontWeight: FontWeight.bold)),
-                        onPressed: () {
-                          _showDatePicker(context);
-                        })
+                    AdaptiveFlatButton('Choose date', _showDatePicker)
                   ],
                 ),
                 RaisedButton(
