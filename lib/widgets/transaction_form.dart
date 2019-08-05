@@ -70,7 +70,7 @@ class _TransactionFormState extends State<TransactionForm> {
                     controller: _amountController,
                     keyboardType: TextInputType.number,
                     onSubmitted: (_) => _submitData(context)),
-                SizedBox(
+                const SizedBox(
                   height: 10.0,
                 ),
                 Row(

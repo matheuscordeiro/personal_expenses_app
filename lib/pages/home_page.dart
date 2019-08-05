@@ -49,9 +49,8 @@ class _HomePage extends State<HomePage> {
         });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final PreferredSizeWidget appBar = Platform.isIOS
+  PreferredSizeWidget _buildAppBar(){
+    return Platform.isIOS
         ? CupertinoNavigationBar(
             middle: Text('Personal Expenses'),
             trailing: Row(
@@ -78,24 +77,28 @@ class _HomePage extends State<HomePage> {
                   })
             ],
           );
+  }
 
+  @override
+  Widget build(BuildContext context) {
+    final PreferredSizeWidget appBar = _buildAppBar();
     final Widget appBody = SafeArea(
         child: SingleChildScrollView(
             child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           Switch.adaptive(
             value: true,
             onChanged: (_) {},
             activeColor: Theme.of(context).accentColor,
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           Container(
             child: Chart(recentTransactions: _transactions),
             height: 150,
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           TransactionList(
               transactions: _transactions,
               handlerDeleteTransaction: _deleteTransaction),
